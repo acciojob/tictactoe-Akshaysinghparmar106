@@ -6,6 +6,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tic Tac Toe</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -24,27 +25,38 @@
       width: 350px;
       text-align: center;
     }
+
     #board {
       display: none;
       margin-top: 20px;
     }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 100px);
       gap: 5px;
       justify-content: center;
     }
+
     .cell {
       width: 100px;
       height: 100px;
-      background: #e0e0e0;
+      background: #ffc4c4; /* light pink background */
       display: flex;
       justify-content: center;
       align-items: center;
       font-size: 35px;
       cursor: pointer;
       border-radius: 5px;
+      font-family: "Comic Sans MS";
     }
+
+    .winner {
+      background: purple !important;
+      color: white;
+      font-weight: bold;
+    }
+
     .message {
       margin-top: 15px;
       font-size: 18px;
@@ -53,6 +65,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
 
@@ -66,6 +79,7 @@
     <div id="board">
       <h1>Tic Tac Toe</h1>
       <div class="message"></div>
+
       <div class="grid">
         <div class="cell" id="1"></div>
         <div class="cell" id="2"></div>
@@ -101,7 +115,7 @@
       [2, 5, 8],
       [3, 6, 9],
       [1, 5, 9],
-      [3, 5, 7],
+      [3, 5, 7]
     ];
 
     submitBtn.addEventListener("click", () => {
@@ -127,7 +141,9 @@
 
         this.textContent = currentSymbol;
 
-        if (checkWinner()) {
+        let winCombo = checkWinner();
+        if (winCombo) {
+          highlightWinner(winCombo);
           message.textContent = `${currentPlayer}, congratulations you won!`;
           gameActive = false;
           return;
@@ -152,11 +168,18 @@
       const marks = {};
       cells.forEach((c) => (marks[c.id] = c.textContent));
 
-      return winningCombos.some((combo) => {
+      for (let combo of winningCombos) {
         const [a, b, c] = combo;
-        return (
-          marks[a] !== "" && marks[a] === marks[b] && marks[b] === marks[c]
-        );
+        if (marks[a] !== "" && marks[a] === marks[b] && marks[b] === marks[c]) {
+          return combo; // return the winning set
+        }
+      }
+      return null;
+    }
+
+    function highlightWinner(combo) {
+      combo.forEach((id) => {
+        document.getElementById(id).classList.add("winner");
       });
     }
   </script>
