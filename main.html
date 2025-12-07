@@ -1,16 +1,164 @@
 <!DOCTYPE html>
 
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tic Tac Toe</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      width: 350px;
+      text-align: center;
+    }
+    #board {
+      display: none;
+      margin-top: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 5px;
+      justify-content: center;
+    }
+    .cell {
+      width: 100px;
+      height: 100px;
+      background: #e0e0e0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 35px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .message {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      min-height: 25px;
+    }
+  </style>
 </head>
-
 <body>
-	<!-- the entire body must be written by student -->
-    <script type="text/javascript" src="./script.js">
-</script>
+  <div class="container">
 
+    <div id="input-area">
+      <h2>Enter Player Names</h2>
+      <input type="text" id="player-1" placeholder="Player 1 Name" /><br /><br />
+      <input type="text" id="player-2" placeholder="Player 2 Name" /><br /><br />
+      <button id="submit">Submit</button>
+    </div>
+
+    <div id="board">
+      <h1>Tic Tac Toe</h1>
+      <div class="message"></div>
+      <div class="grid">
+        <div class="cell" id="1"></div>
+        <div class="cell" id="2"></div>
+        <div class="cell" id="3"></div>
+        <div class="cell" id="4"></div>
+        <div class="cell" id="5"></div>
+        <div class="cell" id="6"></div>
+        <div class="cell" id="7"></div>
+        <div class="cell" id="8"></div>
+        <div class="cell" id="9"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const submitBtn = document.getElementById("submit");
+    const board = document.getElementById("board");
+    const message = document.querySelector(".message");
+    const cells = document.querySelectorAll(".cell");
+
+    let player1 = "";
+    let player2 = "";
+    let currentPlayer = "";
+    let currentSymbol = "x";
+    let gameActive = true;
+
+    const winningCombos = [
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9],
+      [1, 4, 7],
+      [2, 5, 8],
+      [3, 6, 9],
+      [1, 5, 9],
+      [3, 5, 7],
+    ];
+
+    submitBtn.addEventListener("click", () => {
+      player1 = document.getElementById("player-1").value.trim();
+      player2 = document.getElementById("player-2").value.trim();
+
+      if (player1 === "" || player2 === "") {
+        alert("Please enter names for both players.");
+        return;
+      }
+
+      document.getElementById("input-area").style.display = "none";
+      board.style.display = "block";
+
+      currentPlayer = player1;
+      message.textContent = `${currentPlayer}, you're up`;
+    });
+
+    cells.forEach((cell) => {
+      cell.addEventListener("click", function () {
+        if (!gameActive) return;
+        if (this.textContent !== "") return;
+
+        this.textContent = currentSymbol;
+
+        if (checkWinner()) {
+          message.textContent = `${currentPlayer}, congratulations you won!`;
+          gameActive = false;
+          return;
+        }
+
+        switchPlayer();
+      });
+    });
+
+    function switchPlayer() {
+      if (currentPlayer === player1) {
+        currentPlayer = player2;
+        currentSymbol = "o";
+      } else {
+        currentPlayer = player1;
+        currentSymbol = "x";
+      }
+      message.textContent = `${currentPlayer}, you're up`;
+    }
+
+    function checkWinner() {
+      const marks = {};
+      cells.forEach((c) => (marks[c.id] = c.textContent));
+
+      return winningCombos.some((combo) => {
+        const [a, b, c] = combo;
+        return (
+          marks[a] !== "" && marks[a] === marks[b] && marks[b] === marks[c]
+        );
+      });
+    }
+  </script>
 </body>
-
 </html>
